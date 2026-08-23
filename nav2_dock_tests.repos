@@ -1,0 +1,12 @@
+# Source dependency for nav2_dock_tests.
+#
+# This package is built against the pluggable docking controller work, which is not in
+# upstream ros-navigation/navigation2. Import it into the src/ of a workspace with:
+#
+#   vcs import src < nav2_dock_tests.repos
+#
+repositories:
+  navigation2:
+    type: git
+    url: https://github.com/odemirs/navigation2.git
+    version: feature/pluggable-docking-controller

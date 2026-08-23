@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<sdf version="1.6" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="headless" default="true"/>
+
+  <world name="default">
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+  <xacro:unless value="$(arg headless)">
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+  </xacro:unless>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin
+      filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+
+    <light name='sun' type='directional'>
+        <cast_shadows>0</cast_shadows>
+        <pose>0 0 10 0 0 0</pose>
+        <diffuse>0.8 0.8 0.8 1</diffuse>
+        <specular>0.8 0.8 0.8 1</specular>
+        <attenuation>
+            <range>1000</range>
+            <constant>0.9</constant>
+            <linear>0.01</linear>
+            <quadratic>0.001</quadratic>
+        </attenuation>
+        <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    <model name='ground_plane'>
+        <static>1</static>
+        <link name='link'>
+            <collision name='collision'>
+                <geometry>
+                    <plane>
+                        <normal>0 0 1</normal>
+                        <size>100 100</size>
+                    </plane>
+                </geometry>
+                <max_contacts>10</max_contacts>
+            </collision>
+            <visual name='visual'>
+                <geometry>
+                    <plane>
+                        <normal>0 0 1</normal>
+                        <size>100 100</size>
+                    </plane>
+                </geometry>
+                <material>
+                    <ambient>0.8 0.8 0.8 1</ambient>
+                    <diffuse>0.8 0.8 0.8 1</diffuse>
+                    <specular>0.8 0.8 0.8 1</specular>
+                </material>
+            </visual>
+        </link>
+    </model>
+
+    <scene>
+      <shadows>0</shadows>
+    </scene>
+
+    <physics name='3ms' type='ode'>
+        <max_step_size>0.003</max_step_size>
+        <real_time_factor>1</real_time_factor>
+    </physics>
+
+    <model name="turtlebot3_world">
+      <static>1</static>
+      <include>
+        <uri>model://turtlebot3_world</uri>
+      </include>
+    </model>
+
+    <!-- Charging dock for the docking tests. Backed against the inner face of the east wall
+         (x ~ 2.575) in the y = -0.6 aisle, so the robot approaches from the west along a
+         clear run. Keep this pose in step with docking_server's home_dock entry in
+         params/nav2_dock_tests_params.yaml. The dock is intentionally absent from the static
+         map; the robot sees it through the lidar into the local costmap. -->
+    <include>
+      <uri>model://simple_dock</uri>
+      <name>simple_dock</name>
+      <pose>2.42 -0.60 0 0 0 0</pose>
+    </include>
+
+  </world>
+</sdf>

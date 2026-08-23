@@ -1,0 +1,32 @@
+# --- colcon / ament build artifacts ---
+build/
+install/
+log/
+
+# Generated compile database and clangd's index
+compile_commands.json
+.cache/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- ROS 2 runtime output ---
+# rosbag2 writes a directory per recording
+rosbag2_*/
+*.db3
+*.mcap
+
+# --- Simulation / benchmark output ---
+# Metrics, plots and pickles produced by test runs belong to a run, not to the repo
+results/
+*.pickle
+
+# --- Editors and OS ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
