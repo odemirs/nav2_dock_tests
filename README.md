@@ -18,7 +18,7 @@ Binary dependencies, tested for ROS 2 Jazzy:
 
 Our setup uses ros2 jazzy for Ubuntu 24.04. The BehaiorTree library
 provided by jazzy is not compatible with the main branch of
-navigation2. So, it also build from source.
+navigation2. So, it is also built from source.
 
 ```bash
 cd <path-to-your-workspace>
@@ -80,7 +80,7 @@ constants at the top of `launch/dock_test_launch.py`
 |---|---|---|
 | `USE_SIM_TIME` | `True` | |
 | `AUTOSTART` | `True` | |
-| `USE_COMPOSITION` | `True` | see caveat below |
+| `USE_COMPOSITION` | `True` | |
 | `USE_RESPAWN` | `False` | |
 | `LOG_LEVEL` | `info` | |
 | `USE_RVIZ` | `True` | |
@@ -122,6 +122,6 @@ ros2 action send_goal /dock_robot nav2_msgs/action/DockRobot \
 `nodes/dock_pose_publisher.py` publishes a synthetic `detected_dock_pose`, which is what
 `SimpleChargingDock::getRefinedPose` consumes when `use_external_detection_pose` is `true`.
 
-## Deviation from upstream nav2_params.yaml
+## Parameters file
 
 The parameter file originated from `nav2_bringup/params/nav2_params.yaml`.
