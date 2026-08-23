@@ -1,6 +1,6 @@
 # nav2_dock_tests
 
-Simulation bringup for testin the Nav2 docking server.
+Simulation bringup for testing the Nav2 docking server.
 
 ## Requirements
 
@@ -16,13 +16,40 @@ Binary dependencies, tested for ROS 2 Jazzy:
 
 ## Build
 
+Our setup uses ros2 jazzy for Ubuntu 24.04. The BehaiorTree library
+provided by jazzy is not compatible with the main branch of
+navigation2. So, it also build from source.
+
 ```bash
 cd <path-to-your-workspace>
-git clone https://github.com/odemirs/nav2_dock_tests
+git clone https://github.com/BehaviorTree/BehaviorTree.CPP.git
+cd BehaviorTree.CPP
+git checkout tags/4.10.0
 source /opt/ros/jazzy/setup.bash
-source <navigation2-workspace>/install/setup.bash     # the fork, as an underlay
-colcon build --packages-select nav2_dock_tests
-source install/setup.bash
+rosdep install --from-paths . --ignore-src
+colcon build --symlink-install
+```
+
+```bash
+cd <path-to-your-workspace>
+git clone https://github.com/odemirs/navigation2.git
+cd navigation2
+git checkout feature/pluggable-docking-controller
+source /opt/ros/jazzy/setup.bash
+source <path-to-your-workspace>/BehaviorTree.CPP/install/local_setup.bash
+rosdep install --from-paths . --ignore-src
+colcon build --symlink-install
+```
+
+```bash
+cd <path-to-your-workspace>
+git clone https://github.com/odemirs/nav2_dock_tests.git
+source /opt/ros/jazzy/setup.bash
+source <path-to-your-workspace>/BehaviorTree.CPP/install/local_setup.bash
+source <path-to-your-workspace>/navigation2/install/local_setup.bash
+rosdep install --from-paths nav2_dock_tests --ignore-src
+colcon build --packages-select nav2_dock_tests --symlink-install
+source install/local_setup.bash
 ```
 
 ## Run
