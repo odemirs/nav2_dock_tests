@@ -34,7 +34,7 @@ colcon build --symlink-install
 cd <path-to-your-workspace>
 git clone https://github.com/odemirs/navigation2.git
 cd navigation2
-git checkout feature/pluggable-docking-controller
+git checkout pluggable-docking-controllers
 source /opt/ros/jazzy/setup.bash
 source <path-to-your-workspace>/BehaviorTree.CPP/install/local_setup.bash
 rosdep install --from-paths . --ignore-src

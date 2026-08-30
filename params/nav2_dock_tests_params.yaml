@@ -548,7 +548,9 @@
       frame: map
       pose: [2.0, -0.6, 0.0]
 
-    controller:
+    controllers: ["graceful"]
+    graceful:
+      plugin: "opennav_docking::GracefulController"
       k_phi: 3.0
       k_delta: 2.0
       v_linear_min: 0.15
