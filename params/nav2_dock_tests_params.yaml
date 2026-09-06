@@ -527,6 +527,7 @@
     dock_plugins: ["simple_charging_dock"]
     simple_charging_dock:
       plugin: "opennav_docking::SimpleChargingDock"
+      controller: graceful
       docking_threshold: 0.05
       staging_x_offset: -0.7
       use_external_detection_pose: true
@@ -542,19 +543,51 @@
       external_detection_rotation_yaw: 0.0
       filter_coef: 0.1
 
-    docks: ['home_dock']
+    docks: ['home_dock', 'home_dock_graceful']
     home_dock:
       type: 'simple_charging_dock'
       frame: map
       pose: [2.0, -0.6, 0.0]
+      controller: pid
+    # Same physical dock, selecting the other controller
+    home_dock_graceful:
+      type: 'simple_charging_dock'
+      frame: map
+      pose: [2.0, -0.6, 0.0]
+      controller: graceful
 
-    controllers: ["graceful"]
+    controllers: ["graceful", "pid"]
     graceful:
       plugin: "opennav_docking::GracefulController"
       k_phi: 3.0
       k_delta: 2.0
       v_linear_min: 0.15
       v_linear_max: 0.15
+      use_collision_detection: true
+      costmap_topic: "local_costmap/costmap_raw"
+      footprint_topic: "local_costmap/published_footprint"
+      transform_tolerance: 0.1
+      projection_time: 5.0
+      simulation_time_step: 0.1
+      dock_collision_threshold: 0.6
+
+    pid:
+      plugin: "opennav_docking::PIDController"
+      kp_x: 1.0
+      ki_x: 0.0
+      kd_x: 0.0
+      i_clamp_x: 0.2
+      kp_y: 1.5
+      ki_y: 0.3
+      kd_y: 0.0
+      i_clamp_y: 2.0
+      kp_theta: 0.8
+      ki_theta: 0.0
+      kd_theta: 0.0
+      i_clamp_theta: 0.5
+      v_linear_max: 0.15
+      v_angular_max: 0.5
+      lookahead_distance: 0.25
       use_collision_detection: true
       costmap_topic: "local_costmap/costmap_raw"
       footprint_topic: "local_costmap/published_footprint"

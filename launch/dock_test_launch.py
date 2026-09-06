@@ -29,7 +29,7 @@ from launch.actions import (
     RegisterEventHandler,
 )
 from launch.conditions import IfCondition
-from launch.event_handlers import OnShutdown
+from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import PythonExpression
 from launch_ros.actions import Node
@@ -38,7 +38,7 @@ from nav2_common.launch import LaunchConfigAsBool
 # Nav2
 USE_SIM_TIME = "True"
 AUTOSTART = "True"
-USE_COMPOSITION = "True"
+USE_COMPOSITION = "False"
 USE_RESPAWN = "False"
 LOG_LEVEL = "info"
 USE_RVIZ = "True"
@@ -115,6 +115,13 @@ def generate_launch_description() -> LaunchDescription:
     gazebo_server = ExecuteProcess(
         cmd=["gz", "sim", "-r", "-s", world_sdf],
         output="screen",
+    )
+
+    # gz must not start until xacro has finished writing world_sdf
+    start_gazebo_after_xacro = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=world_sdf_xacro, on_exit=[gazebo_server]
+        )
     )
 
     remove_temp_sdf_file = RegisterEventHandler(
@@ -213,7 +220,7 @@ def generate_launch_description() -> LaunchDescription:
 
     ld.add_action(world_sdf_xacro)
     ld.add_action(remove_temp_sdf_file)
-    ld.add_action(gazebo_server)
+    ld.add_action(start_gazebo_after_xacro)
     ld.add_action(gazebo_client)
     ld.add_action(spawn_robot)
     ld.add_action(start_robot_state_publisher_cmd)
