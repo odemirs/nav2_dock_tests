@@ -73,23 +73,26 @@ constants at the top of `launch/dock_test_launch.py`
 | `SPAWN_X` / `SPAWN_Y` / `SPAWN_Z` | `-2.00` / `-0.50` / `0.01` | must match amcl's seeded `initial_pose` |
 | `SPAWN_ROLL` / `SPAWN_PITCH` / `SPAWN_YAW` | `0.00` / `0.00` / `0.00` | |
 | `ROBOT_NAME` | `turtlebot3_waffle` | |
-| `DOCK_X` / `DOCK_Y` / `DOCK_YAW` | `2.0` / `-0.6` / `0.0` | must match `home_dock` in the parameter file |
+| `DOCK_X` / `DOCK_Y` / `DOCK_YAW` | `1.05` / `2.0` / `0.0` | must match `home_dock` in the parameter file |
 | `DOCK_DETECTION_RATE` | `20.0` Hz | |
 | `DOCK_NOISE_STDDEV_X` | `0.0` | Gaussian noise stddev on the detected dock x [m] |
 | `DOCK_NOISE_STDDEV_Y` | `0.0` | Gaussian noise stddev on the detected dock y [m] |
 | `DOCK_NOISE_STDDEV_YAW` | `0.0` | Gaussian noise stddev on the detected dock yaw [rad] |
 | `DOCK_NOISE_SEED` | `0` | `0` is nondeterministic |
+| `DOCK_DETECTION_FRAME` | `base_link` | frame the detection is published in |
+| `GROUND_TRUTH_TOPIC` | `ground_truth_pose` | gz world pose of the robot, bridged from `/model/<ROBOT_NAME>/pose` |
 
 ## Layout
 
 ```
 launch/dock_test_launch.py     the one launch file: simulation + localization + navigation + RViz
-nodes/dock_pose_publisher.py   synthetic detected_dock_pose, with configurable Gaussian noise
+nodes/dock_pose_publisher.py   synthetic detected_dock_pose from gz ground truth, with Gaussian noise
 params/                        one parameter file for the whole stack
 maps/                          occupancy grid matching the world
 worlds/                        Gazebo world (xacro, so the GUI plugin is conditional)
 models/simple_dock/            the dock: a plain static box
 rviz/                          RViz configuration
+urdf/gz_waffle.sdf.xacro       nav2_minimal_tb3_sim's robot model plus a ground-truth PosePublisher
 ```
 
 ## The dock

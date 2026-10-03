@@ -19,6 +19,7 @@ install(DIRECTORY
     models
     params
     rviz
+    urdf
     worlds
   DESTINATION share/${PROJECT_NAME}
 )

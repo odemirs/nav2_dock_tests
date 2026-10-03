@@ -50,13 +50,16 @@ ROBOT_NAME = "turtlebot3_waffle"
 
 # Synthetic dock detection
 # Ground truth must match home_dock in the parameter file.
-DOCK_X, DOCK_Y, DOCK_YAW = 2.0, -0.6, 0.0
+DOCK_X, DOCK_Y, DOCK_YAW = 1.05, 2.0, 0.0
 DOCK_DETECTION_RATE = 20.0
 # Gaussian noise added to each published detection.
 DOCK_NOISE_STDDEV_X = 0.0  # [m]
 DOCK_NOISE_STDDEV_Y = 0.0  # [m]
 DOCK_NOISE_STDDEV_YAW = 0.0  # [rad]
 DOCK_NOISE_SEED = 0  # 0 is nondeterministic; fix it to replay a disturbance
+# Detections are published relative to the robot, from the simulator's ground-truth pose
+DOCK_DETECTION_FRAME = "base_link"
+GROUND_TRUTH_TOPIC = "ground_truth_pose"
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -70,7 +73,7 @@ def generate_launch_description() -> LaunchDescription:
     params_file = os.path.join(pkg_dir, "params", "nav2_dock_tests_params.yaml")
     rviz_config_file = os.path.join(pkg_dir, "rviz", "nav2_dock_tests_view.rviz")
     world = os.path.join(pkg_dir, "worlds", "dock_test_world.sdf.xacro")
-    robot_sdf = os.path.join(sim_dir, "urdf", "gz_waffle.sdf.xacro")
+    robot_sdf = os.path.join(pkg_dir, "urdf", "gz_waffle.sdf.xacro")
 
     headless = LaunchConfigAsBool("headless")
 
@@ -157,6 +160,16 @@ def generate_launch_description() -> LaunchDescription:
         }.items(),
     )
 
+    ground_truth_bridge_cmd = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        name="ground_truth_bridge",
+        output="screen",
+        arguments=[f"/model/{ROBOT_NAME}/pose@geometry_msgs/msg/PoseStamped[gz.msgs.Pose"],
+        parameters=[{"use_sim_time": True}],
+        remappings=[(f"/model/{ROBOT_NAME}/pose", GROUND_TRUTH_TOPIC)],
+    )
+
     # Stands in for a perception pipeline: SimpleChargingDock::getRefinedPose subscribes to
     dock_pose_publisher_cmd = Node(
         package="nav2_dock_tests",
@@ -166,7 +179,8 @@ def generate_launch_description() -> LaunchDescription:
         parameters=[
             {
                 "use_sim_time": True,
-                "frame_id": "map",
+                "frame_id": DOCK_DETECTION_FRAME,
+                "ground_truth_topic": GROUND_TRUTH_TOPIC,
                 "dock_x": DOCK_X,
                 "dock_y": DOCK_Y,
                 "dock_yaw": DOCK_YAW,
@@ -225,6 +239,7 @@ def generate_launch_description() -> LaunchDescription:
     ld.add_action(spawn_robot)
     ld.add_action(start_robot_state_publisher_cmd)
 
+    ld.add_action(ground_truth_bridge_cmd)
     ld.add_action(dock_pose_publisher_cmd)
     ld.add_action(bringup_cmd)
     ld.add_action(rviz_cmd)

@@ -29,6 +29,7 @@
   <!-- Synthetic dock detection node -->
   <exec_depend>rclpy</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf_transformations</exec_depend>
 
   <!-- Launch -->
   <exec_depend>launch</exec_depend>
