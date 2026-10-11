@@ -81,6 +81,7 @@
       search_window: 2.0
     bt_search_directories:
       - $(find-pkg-share nav2_bt_navigator)/behavior_trees
+      - $(find-pkg-share nav2_bt_navigator)/behavior_trees/subtrees
 
     # plugin_lib_names is used to add custom BT plugins to the executor (vector of strings).
     # Built-in plugins are added automatically
