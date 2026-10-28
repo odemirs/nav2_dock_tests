@@ -2,6 +2,8 @@
 
 Simulation bringup for testing the Nav2 docking server.
 
+It is mainly used for A/B testing the improvements in this [Nav2 PR](https://github.com/ros-navigation/navigation2/pull/6469).
+
 ## Requirements
 
 Built against the **`feature/pluggable-docking-controller`** branch of
